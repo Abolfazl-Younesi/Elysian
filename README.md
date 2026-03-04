@@ -25,11 +25,11 @@ ELySian jointly optimises **operator placement** and **auto-scaling** in Apache 
 
 | Component | Purpose |
 |---|---|
-| **MAGTOP** | Multi-Agent Game-Theoretic Operator Placement — decentralised best-response with Nash convergence |
-| **DFD** | Dynamic Functional Decomposition — splits hot operators into independently-placed micro-operators |
-| **MTAM** | Multi-Tier Adaptive Materialization — lightweight LSTM predicts access patterns and assigns state to HOT/WARM/COLD tiers |
-| **ReFS** | Resource Frequency Scaling — closed-loop per-node CPU frequency/voltage controller |
-| **Coord** | Distributed Coordination Protocol — ZooKeeper-backed locking with exponential back-off |
+| **MAGTOP** | Multi-Agent Game-Theoretic Operator Placement  decentralised best-response with Nash convergence |
+| **DFD** | Dynamic Functional Decomposition splits hot operators into independently-placed micro-operators |
+| **MTAM** | Multi-Tier Adaptive Materialization  lightweight LSTM predicts access patterns and assigns state to HOT/WARM/COLD tiers |
+| **ReFS** | Resource Frequency Scaling closed-loop per-node CPU frequency/voltage controller |
+| **Coord** | Distributed Coordination Protocol  ZooKeeper-backed locking with exponential back-off |
 
 ---
 
@@ -154,27 +154,27 @@ All parameters live in **`elysian.yaml`** at the project root. Mount it via `-De
 Domain model (`Node`, `Operator`, `Placement`, `StateTier`) and all config POJOs. Zero dependencies on other ELySian modules.
 
 ### `elysian-magtop`
-- **`TopKSelector`** — O(m) min-heap, composite scoring (CPU 40%, Mem 30%, Locality 20%, Hist 10%)
-- **`UtilityCalculator`** — RU + LU − MC + CA with all four Paper formulas
-- **`InitialPlacementStrategy`** — Kahn topological-sort greedy initialiser
-- **`MagtopPlanner`** — outer MAGTOP loop with convergence check and weight self-tuning
+- **`TopKSelector`**  O(m) min-heap, composite scoring (CPU 40%, Mem 30%, Locality 20%, Hist 10%)
+- **`UtilityCalculator`** RU + LU − MC + CA with all four Paper formulas
+- **`InitialPlacementStrategy`**  Kahn topological-sort greedy initialiser
+- **`MagtopPlanner`**  outer MAGTOP loop with convergence check and weight self-tuning
 
 ### `elysian-mtam`
-- **`LstmPredictor`** — pure-Java 2-layer LSTM (32 hidden units), Xavier init, EWMA fallback
-- **`StateTierAssigner`** — sliding-window + LSTM → HOT/WARM/COLD with cost–benefit gating
+- **`LstmPredictor`**  pure-Java 2-layer LSTM (32 hidden units), Xavier init, EWMA fallback
+- **`StateTierAssigner`**  sliding-window + LSTM → HOT/WARM/COLD with cost–benefit gating
 
 ### `elysian-refs`
-- **`RefsController`** — background thread running the closed-loop frequency controller
-- **`FrequencyVoltageUpdater`** — UFV: log-scaled Δf, hysteresis gate, square-root voltage mapping
-- **`LoadFactorCalculator`** — L_i = (u_i / Σu_j) × m
+- **`RefsController`**  background thread running the closed-loop frequency controller
+- **`FrequencyVoltageUpdater`**  UFV: log-scaled Δf, hysteresis gate, square-root voltage mapping
+- **`LoadFactorCalculator`**  L_i = (u_i / Σu_j) × m
 
 ### `elysian-coordination`
-- **`DistributedLockManager`** — in-JVM `ReentrantLock` (swap ZooKeeper impl for production)
-- **`CoordinatedMigrationExecutor`** — lock → conflict-check → reserve → broadcast → execute → rollback
-- **`MigrationCheckpointStore`** — pre-migration snapshot for rollback
+- **`DistributedLockManager`**  in-JVM `ReentrantLock` (swap ZooKeeper impl for production)
+- **`CoordinatedMigrationExecutor`**  lock → conflict-check → reserve → broadcast → execute → rollback
+- **`MigrationCheckpointStore`**  pre-migration snapshot for rollback
 
 ### `elysian-dfd`
-- **`DfdManager`** — profiles operators, detects hot-path CPU fraction, splits into `_hot` + `_cold` micro-operators
+- **`DfdManager`**  profiles operators, detects hot-path CPU fraction, splits into `_hot` + `_cold` micro-operators
 
 ---
 
@@ -240,3 +240,4 @@ Code style is enforced by Checkstyle (`config/checkstyle/checkstyle.xml`).
 ---
 
 *ELySian is implemented in Java 21 with approximately 8 000 lines of source code (excluding tests).*
+
