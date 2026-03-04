@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elysian
+  namespace: elysian
+  labels:
+    app: elysian
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elysian
+  template:
+    metadata:
+      labels:
+        app: elysian
+    spec:
+      containers:
+        - name: elysian
+          image: elysian:1.0.0
+          command: ["java", "-Delysian.config=/config/elysian.yaml", "-jar", "/app/elysian-app.jar"]
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: elysian-config

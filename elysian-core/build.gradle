@@ -1,0 +1,3 @@
+dependencies {
+    // No extra dependencies beyond root — core has no module deps
+}

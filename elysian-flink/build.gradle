@@ -1,0 +1,6 @@
+dependencies {
+    api project(':elysian-core')
+    api project(':elysian-magtop')
+    api project(':elysian-mtam')
+    api project(':elysian-coordination')
+}

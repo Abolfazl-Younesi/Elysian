@@ -1,0 +1,12 @@
+rootProject.name = 'elysian'
+
+include(
+    'elysian-core',
+    'elysian-magtop',
+    'elysian-dfd',
+    'elysian-mtam',
+    'elysian-refs',
+    'elysian-coordination',
+    'elysian-flink',
+    'elysian-app'
+)

@@ -1,0 +1,113 @@
+# ============================================================
+# ELySian — Master Configuration File
+# All tuneable parameters live here; environment-specific values
+# can be overridden with -Delysian.config=/path/to/override.yaml
+# ============================================================
+
+cluster:
+  # List of nodes in the cluster. Populated at runtime; can be seeded here for testing.
+  # Each entry: { id, region, cpuCores, cpuGhz, memGib, bwGbps, nodeType }
+  nodes: []
+  regions:
+    - Lyon
+    - Sophia
+    - Nantes
+    - Toulouse
+
+# ────────────────────────────────────────────────────────────
+# MAGTOP – Multi-Agent Game-Theoretic Operator Placement
+# ────────────────────────────────────────────────────────────
+magtop:
+  # Utility function weights (must sum to 1.0)
+  alpha: 0.35          # resource-utility weight (RU)
+  beta:  0.30          # latency-utility weight  (LU)
+  gamma: 0.20          # migration-cost weight   (MC)
+  theta: 0.15          # communication-affinity  (CA)
+
+  epsilon: 0.05        # minimum utility improvement to trigger migration
+  maxIterations: 50    # convergence guard
+  parameterUpdateInterval: 5   # re-tune α/β/γ/θ every N iterations
+  latencySloMs: 50.0   # target SLO latency (ms) – used for β auto-tuning
+
+  topK:
+    k: 3               # candidates returned by findTopKCandidates
+    weightCpu:      0.40
+    weightMemory:   0.30
+    weightLocality: 0.20
+    weightHistPerf: 0.10
+
+# ────────────────────────────────────────────────────────────
+# DFD – Dynamic Functional Decomposition
+# ────────────────────────────────────────────────────────────
+dfd:
+  enabled: true
+  cpuHotPathThreshold: 0.65   # fraction of op CPU flagged as hot path
+  minStateSizeMb: 100         # only decompose if operator state > this
+  profilingWindowSec: 30      # measurement window before deciding to split
+
+# ────────────────────────────────────────────────────────────
+# MTAM – Multi-Tier Adaptive Materialization
+# ────────────────────────────────────────────────────────────
+mtam:
+  hotThresholdAccessPerSec:  100.0
+  warmThresholdAccessPerSec:  10.0
+  migrationThreshold: 0.05    # net benefit must exceed cost by this fraction
+
+  lstm:
+    hiddenUnits: 32
+    layers: 2
+    windowSize: 100            # sliding window (number of access events)
+    learningRate: 0.001
+    epochs: 100
+    batchSize: 64
+    confidenceThreshold: 0.5   # below → EWMA fallback
+    ewmaAlpha: 0.7             # EWMA blending factor
+
+  tiers:
+    hot:
+      replicationFactor: 3
+      consistencyMode: RAFT_SYNC
+      encodingType: COUNT_MIN_SKETCH
+    warm:
+      replicationFactor: 2
+      consistencyMode: WAL_ASYNC
+      encodingType: DELTA_ENCODING
+    cold:
+      replicationFactor: 1
+      consistencyMode: EVENTUAL
+      encodingType: LZ4_SNAPSHOT
+
+# ────────────────────────────────────────────────────────────
+# ReFS – Resource Frequency Scaling
+# ────────────────────────────────────────────────────────────
+refs:
+  enabled: true
+  targetUtilization: 0.70   # u_target
+  gamma: 0.10                # frequency-adjustment gain
+  beta:  0.50                # memory/IO mix weight in ψ
+  delta: 0.02                # hysteresis fraction (Δf_min = δ·f_max)
+  monitoringIntervalMs: 1000
+  fMinGhz: 0.80
+  fMaxGhz: 3.50
+  vMinVolts: 0.90
+  vMaxVolts: 1.20
+
+# ────────────────────────────────────────────────────────────
+# Distributed Coordination Protocol
+# ────────────────────────────────────────────────────────────
+coordination:
+  maxRetries: 5
+  initialBackoffMs: 100
+  backoffMultiplier: 2.0
+  lockTimeoutSec: 5
+  # ZooKeeper connect string; use "local" for in-JVM lock (single-node dev)
+  zookeeperConnect: "localhost:2181"
+  lockBasePath: "/elysian/locks"
+
+# ────────────────────────────────────────────────────────────
+# Flink Integration
+# ────────────────────────────────────────────────────────────
+flink:
+  jobManagerUrl: "http://localhost:8081"
+  metricsPollingIntervalMs: 2000
+  rescalingApiTimeoutMs: 10000

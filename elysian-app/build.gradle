@@ -1,0 +1,9 @@
+dependencies {
+    api project(':elysian-core')
+    api project(':elysian-magtop')
+    api project(':elysian-mtam')
+    api project(':elysian-refs')
+    api project(':elysian-coordination')
+    api project(':elysian-flink')
+    api project(':elysian-dfd')
+}

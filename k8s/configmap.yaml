@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elysian-config
+  namespace: elysian
+data:
+  elysian.yaml: |
+    cluster:
+      regions: [Lyon, Sophia, Nantes, Toulouse]
+    magtop:
+      alpha: 0.35
+      beta:  0.30
+      gamma: 0.20
+      theta: 0.15
+      epsilon: 0.05
+      maxIterations: 50
+      parameterUpdateInterval: 5
+      latencySloMs: 50.0
+      topK:
+        k: 3
+        weightCpu: 0.40
+        weightMemory: 0.30
+        weightLocality: 0.20
+        weightHistPerf: 0.10
+    mtam:
+      hotThresholdAccessPerSec: 100.0
+      warmThresholdAccessPerSec: 10.0
+      migrationThreshold: 0.05
+      lstm:
+        hiddenUnits: 32
+        layers: 2
+        windowSize: 100
+        learningRate: 0.001
+        confidenceThreshold: 0.5
+        ewmaAlpha: 0.7
+    refs:
+      enabled: true
+      targetUtilization: 0.70
+      gamma: 0.10
+      beta:  0.50
+      delta: 0.02
+      monitoringIntervalMs: 1000
+      fMinGhz: 0.80
+      fMaxGhz: 3.50
+      vMinVolts: 0.90
+      vMaxVolts: 1.20
+    coordination:
+      maxRetries: 5
+      initialBackoffMs: 100
+      backoffMultiplier: 2.0
+      lockTimeoutSec: 5
+      zookeeperConnect: "zookeeper:2181"
+    flink:
+      jobManagerUrl: "http://flink-jobmanager:8081"
+      metricsPollingIntervalMs: 2000
